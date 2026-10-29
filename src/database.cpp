@@ -66,3 +66,27 @@ std::optional<std::string> Database::findUrl(const std::string& shortCode) const
     
     return result[0][0].as<std::string>();
 }
+
+std::vector<std::pair<std::string, std::string>> Database::getAllUrls() const
+{
+    pqxx::connection connection{connectionString_};
+    pqxx::read_transaction transaction{connection};
+
+    const auto result = transaction.exec(
+        "SELECT short_code, original_url "
+        "FROM shortened_urls "
+        "ORDER BY created_at DESC"
+    );
+
+    std::vector<std::pair<std::string, std::string>> urls;
+
+    for (const auto& row : result)
+    {
+        urls.emplace_back(
+            row[0].as<std::string>(),
+            row[1].as<std::string>()
+        );
+    }
+
+    return urls;
+}
