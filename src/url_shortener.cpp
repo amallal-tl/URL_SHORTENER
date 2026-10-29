@@ -1,5 +1,7 @@
 #include "url_shortener/url_shortener.h"
 
+#include <exception>
+
 UrlShortener::UrlShortener()
 {
     registerRoutes();
@@ -17,18 +19,26 @@ void UrlShortener::registerRoutes()
         return crow::response(200, "Server looks healthy!");
     });
 
-    CROW_ROUTE(app, "/checkDB")([]()
+    // Crow calls this lambda when a client sends GET /checkDB.
+    CROW_ROUTE(app, "/checkDB")([this]()
     {
-        const char* connectionString = std::getenv("DATABASE_URL");
+        try{
+            // Reuse the Database object owned by UrlShortener.
+            database_.testConnection();
+            return crow::response(
+                200,
+                "Database connected successfully!!!"
+            );
+        }catch(const std::exception& exception){
+            // Log the error on the server, not in the HTTP response.
+            std::cerr << "Database check failed: "
+                      << exception.what() << '\n';
 
-        if(connectionString == nullptr){
-            return crow::response(500, "Database String not available!");
+            return crow::response(
+                500,
+                "Database connection failed."
+            );
         }
-
-        Database database{connectionString};
-        database.testConnection();
-
-        return crow::response(200, "Database connected Successfully!");
     });
 }
 
