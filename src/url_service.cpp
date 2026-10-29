@@ -1,7 +1,8 @@
 #include "url_shortener/url_service.h"
 
-UrlService::UrlService(Database database){
-    
+// Called when UrlShortener initializes its urlService_ member.
+UrlService::UrlService(Database database) : database_(std::move(database)){
+    // Stores the supplied Database dependency for future service operations.
 }
 
 std::string UrlService::shorten(const std::string& url){

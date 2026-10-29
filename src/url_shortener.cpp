@@ -25,10 +25,12 @@ void UrlShortener::registerRoutes()
         try{
             // Reuse the Database object owned by UrlShortener.
             database_.testConnection();
+            
             return crow::response(
                 200,
-                "Database connected successfully!!!"
+                "Database connected successfully"
             );
+
         }catch(const std::exception& exception){
             // Log the error on the server, not in the HTTP response.
             std::cerr << "Database check failed: "
