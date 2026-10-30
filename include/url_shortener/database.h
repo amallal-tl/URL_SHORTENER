@@ -3,6 +3,9 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <utility>
+#include <cstdlib>
+#include <stdexcept>
 
 class Database{
     public:

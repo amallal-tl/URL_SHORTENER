@@ -18,5 +18,4 @@ class UrlService{
     private:
         ShortCodeGenerator generator_; // Creates short codes.
         Database database_;
-        std::unordered_map<std::string, std::string> urls_;
 };
